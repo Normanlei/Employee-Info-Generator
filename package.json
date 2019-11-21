@@ -21,7 +21,9 @@
   },
   "homepage": "https://github.com/Normanlei/Employee-Info-Generator#readme",
   "dependencies": {
-    "inquirer": "^6.3.1"
+    "cheerio": "^1.0.0-rc.3",
+    "inquirer": "^6.3.1",
+    "util": "^0.12.1"
   },
   "devDependencies": {
     "jest": "^24.8.0"

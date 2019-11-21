@@ -4,10 +4,15 @@ const Intern = require("./lib/Intern");
 const Manager = require("./lib/Manager");
 const inquirer = require("inquirer");
 const questions = require("./lib/Questions");
+const cheerio = require('cheerio');
+const fs = require('fs');
+const util = require("util");
 
+let writefileAsync = util.promisify(fs.writeFile);
 let teamName;
 let objToHTML = []; //Array to store all the employee object to build html
-
+let i = 0;
+let member;
 
 init();
 
@@ -44,7 +49,7 @@ function buildStaff() {
                     buildHTML();
                     break;
             }
-        },function(error){
+        }, function (error) {
             console.log(error);
         })
 }
@@ -55,7 +60,7 @@ function buildEngineer() {
             let tempObj = new Engineer(data.engineer, data.engineerID, data.engineerEmail, data.engineerGithub);
             objToHTML.push(tempObj);
             buildStaff();
-        },function(error){
+        }, function (error) {
             console.log(error);
         })
 }
@@ -63,15 +68,44 @@ function buildEngineer() {
 function buildIntern() {
     inquirer.prompt(questions.internQuestions)
         .then(function (data) {
-            let tempObj = new Engineer(data.intern, data.internID, data.internEmail, data.internSchool);
+            let tempObj = new Intern(data.intern, data.internID, data.internEmail, data.internSchool);
             objToHTML.push(tempObj);
             buildStaff();
-        },function(error){
+        }, function (error) {
             console.log(error);
         })
 }
 
-function buildHTML(){
-    console.log("creating.....html");
+function buildHTML() {
+    let html = fs.readFileSync("./templates/main.html", "utf8");
+    let $main = cheerio.load(html);
+    $main("#title").html(teamName);
+    writefileAsync("./templates/main.html", $main.html(), error => {
+        if (error) console.log(error);
+    });
+    console.log("Team Name is added to main.html successfully!!!");
+    //addMemberHTML();
+    member = objToHTML[i];
+    addManager(member);
 }
 
+// function addMemberHTML() {
+//     member = objToHTML[i++];
+//     if (member.getRole() === "Manager") addManager(member);
+// }
+
+function addManager(member) {
+    let html = fs.readFileSync("./templates/manager.html", "utf8");
+    let $manager = cheerio.load(html);
+    let mainHtml = fs.readFileSync("./templates/main.html", "utf8");
+    let $main = cheerio.load(mainHtml);
+    $manager("#name").html("Norman");
+    $manager("#id").html('1');
+    $manager("#email").html('fjfj');
+    $manager("#office").html('2');
+    $main("#addMember").append($manager.html());
+    writefileAsync("./templates/main.html", $main.html(), error => {
+        if (error) console.log(error);
+    });
+    console.log("Manager is added to main.html successfully!!!");
+}
