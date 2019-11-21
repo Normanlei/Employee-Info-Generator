@@ -9,6 +9,7 @@ const fs = require('fs');
 const util = require("util");
 
 let writefileAsync = util.promisify(fs.writeFile);
+let readFileAsync = util.promisify(fs.readFile);
 let teamName;
 let objToHTML = []; //Array to store all the employee object to build html
 let i = 0;
@@ -97,15 +98,17 @@ function buildHTML() {
 function addManager(member) {
     let html = fs.readFileSync("./templates/manager.html", "utf8");
     let $manager = cheerio.load(html);
-    let mainHtml = fs.readFileSync("./templates/main.html", "utf8");
-    let $main = cheerio.load(mainHtml);
-    $manager("#name").html("Norman");
-    $manager("#id").html('1');
-    $manager("#email").html('fjfj');
-    $manager("#office").html('2');
-    $main("#addMember").append($manager.html());
-    writefileAsync("./templates/main.html", $main.html(), error => {
-        if (error) console.log(error);
-    });
-    console.log("Manager is added to main.html successfully!!!");
+    readFileAsync("./templates/main.html", "utf8")
+        .then(function (data) {
+            let $main = cheerio.load(data);
+            $manager("#name").html(member.getName());
+            $manager("#id").html(member.getId());
+            $manager("#email").html(member.getEmail());
+            $manager("#office").html(member.getOfficeNumber());
+            $main("#addMember").append($manager.html());
+            writefileAsync("./templates/main.html", $main.html(), error => {
+                if (error) console.log(error);
+            });
+            console.log("Manager is added to main.html successfully!!!");
+        });
 }
