@@ -81,22 +81,23 @@ function buildHTML() {
     let html = fs.readFileSync("./templates/main.html", "utf8");
     let $main = cheerio.load(html);
     $main("#title").html(teamName);
-    writefileAsync("./templates/main.html", $main.html(), error => {
-        if (error) console.log(error);
-    });
-    console.log("Team Name is added to main.html successfully!!!");
-    addMemberHTML();
-    // member = objToHTML[i];
-    // addManager(member);
+    writefileAsync("./templates/main.html", $main.html())
+        .then(function () {
+            console.log("Team Name is added to main.html successfully!!!");
+            addMemberHTML();
+        });
 }
 
 function addMemberHTML() {
+    console.log(i);
+    console.log(objToHTML.length);
     if (i < objToHTML.length) {
         member = objToHTML[i++];
+        console.log(member);
         if (member.getRole() === "Manager") addManager(member);
         else if (member.getRole() === "Engineer") addEngineer(member);
         else addIntern(member);
-    }else {
+    } else {
         console.log("Finished!!!");
     }
 }
@@ -112,10 +113,12 @@ function addManager(member) {
             $manager("#email").html(member.getEmail());
             $manager("#office").html(member.getOfficeNumber());
             $main("#addMember").append($manager.html());
-            writefileAsync("./templates/main.html", $main.html(), error => {
-                if (error) console.log(error);
-            });
-            console.log("Manager is added to main.html successfully!!!");
+            writefileAsync("./templates/main.html", $main.html())
+                .then(function () {
+                    console.log("Manager is added to main.html successfully!!!");
+                    addMemberHTML();
+
+                });
         });
 }
 
@@ -125,14 +128,36 @@ function addEngineer(member) {
     readFileAsync("./templates/main.html", "utf8")
         .then(function (data) {
             let $main = cheerio.load(data);
-            $manager("#name").html(member.getName());
-            $manager("#id").html(member.getId());
-            $manager("#email").html(member.getEmail());
-            $manager("#office").html(member.getOfficeNumber());
-            $main("#addMember").append($manager.html());
-            writefileAsync("./templates/main.html", $main.html(), error => {
-                if (error) console.log(error);
-            });
-            console.log("Manager is added to main.html successfully!!!");
+            $engineer("#name").html(member.getName());
+            $engineer("#id").html(member.getId());
+            $engineer("#email").html(member.getEmail());
+            $engineer("#github").html(member.getGithub());
+            $main("#addMember").append($engineer.html());
+            writefileAsync("./templates/main.html", $main.html())
+                .then(function () {
+                    console.log("Engineer is added to main.html successfully!!!");
+                    addMemberHTML();
+
+                });
+        });
+}
+
+
+function addIntern(member) {
+    let html = fs.readFileSync("./templates/intern.html", "utf8");
+    let $intern = cheerio.load(html);
+    readFileAsync("./templates/main.html", "utf8")
+        .then(function (data) {
+            let $main = cheerio.load(data);
+            $intern("#name").html(member.getName());
+            $intern("#id").html(member.getId());
+            $intern("#email").html(member.getEmail());
+            $intern("#school").html(member.getSchool());
+            $main("#addMember").append($intern.html());
+            writefileAsync("./templates/main.html", $main.html())
+                .then(function () {
+                    console.log("Intern is added to main.html successfully!!!");
+                    addMemberHTML();
+                });
         });
 }
