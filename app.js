@@ -89,11 +89,11 @@ function buildHTML() {
 }
 
 function addMemberHTML() {
-    console.log(i);
-    console.log(objToHTML.length);
+    // console.log(i);
+    // console.log(objToHTML.length);
     if (i < objToHTML.length) {
         member = objToHTML[i++];
-        console.log(member);
+        // console.log(member);
         if (member.getRole() === "Manager") addManager(member);
         else if (member.getRole() === "Engineer") addEngineer(member);
         else addIntern(member);
