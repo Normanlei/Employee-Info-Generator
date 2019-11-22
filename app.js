@@ -100,6 +100,12 @@ function addMemberHTML() {
         else addIntern(member);
     } else {
         console.log("Finished!!!");
+        let html = fs.readFileSync("./templates/main.html", "utf8");
+        writefileAsync("./output/index.html", html)
+        .then(function(error){
+            if (error) throw error;
+        })
+
     }
 }
 
