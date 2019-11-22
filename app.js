@@ -80,6 +80,7 @@ function buildIntern() {
 function buildHTML() {
     let html = fs.readFileSync("./templates/main.html", "utf8");
     let $main = cheerio.load(html);
+    $main("#addMember").html(""); //empty
     $main("#title").html(teamName);
     writefileAsync("./templates/main.html", $main.html())
         .then(function () {
