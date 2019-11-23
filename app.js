@@ -113,10 +113,10 @@ function addMemberHTML() {
             .then(function () {
                 console.log(teamName + " team is built successfully!!!");
                 readFileAsync("./templates/main.html", "utf8")
-                .then(function (html) {
-                    console.log(html);
+                .then(async function (html) {
                     let $main = cheerio.load(html);
-                    $main("#addMember").html(""); //empty    
+                    $main("#addMember").html(""); //empty 
+                    writefileAsync("./templates/main.html", $main.html());
                 });
             }, function (error) {
                 if (error) throw error;
