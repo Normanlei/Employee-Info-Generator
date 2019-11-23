@@ -13,7 +13,7 @@ let readFileAsync = util.promisify(fs.readFile);
 let teamName;
 let objToHTML = []; //Array to store all the employee object to build html
 let i = 0; //for loop the array above
-let member; 
+let member;
 
 init();
 
@@ -98,12 +98,12 @@ function addMemberHTML() {
         else if (member.getRole() === "Engineer") addEngineer(member);
         else addIntern(member);
     } else {
-        console.log(teamName +"is built successfully!!!");
+        console.log(teamName + " team is built successfully!!!");
         let html = fs.readFileSync("./templates/main.html", "utf8");
         writefileAsync("./output/index.html", html)
-        .then(function(error){
-            if (error) throw error;
-        });
+            .then(function (error) {
+                if (error) throw error;
+            });
 
     }
 }
@@ -116,6 +116,7 @@ function addManager(member) {
             let $main = cheerio.load(data);
             $manager("#name").html(member.getName());
             $manager("#id").html(member.getId());
+            $manager("#email").attr('href', `mailto:${member.getEmail()}`);
             $manager("#email").html(member.getEmail());
             $manager("#office").html(member.getOfficeNumber());
             $main("#addMember").append($manager.html());
@@ -138,7 +139,9 @@ function addEngineer(member) {
             let $main = cheerio.load(data);
             $engineer("#name").html(member.getName());
             $engineer("#id").html(member.getId());
+            $engineer("#email").attr('href', `mailto:${member.getEmail()}`);
             $engineer("#email").html(member.getEmail());
+            $engineer("#github").attr('href', `https://github.com/${member.getGithub()}`);
             $engineer("#github").html(member.getGithub());
             $main("#addMember").append($engineer.html());
             writefileAsync("./templates/main.html", $main.html())
@@ -161,6 +164,7 @@ function addIntern(member) {
             let $main = cheerio.load(data);
             $intern("#name").html(member.getName());
             $intern("#id").html(member.getId());
+            $intern("#email").attr('href', `mailto:${member.getEmail()}`);
             $intern("#email").html(member.getEmail());
             $intern("#school").html(member.getSchool());
             $main("#addMember").append($intern.html());
