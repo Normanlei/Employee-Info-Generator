@@ -108,13 +108,19 @@ function addMemberHTML() {
         else if (member.getRole() === "Engineer") addEngineer(member);
         else addIntern(member);
     } else {   //ending loop above to output team html
-        console.log(teamName + " team is built successfully!!!");
         let html = fs.readFileSync("./templates/main.html", "utf8");
         writefileAsync(`./output/${teamName}_Team.html`, html)
-            .then(function (error) {
+            .then(function () {
+                console.log(teamName + " team is built successfully!!!");
+                readFileAsync("./templates/main.html", "utf8")
+                .then(function (html) {
+                    console.log(html);
+                    let $main = cheerio.load(html);
+                    $main("#addMember").html(""); //empty    
+                });
+            }, function (error) {
                 if (error) throw error;
             });
-
     }
 }
 
