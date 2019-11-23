@@ -13,10 +13,10 @@ Here is how the command-line application being built as below:
 ### Demo
 
 ##### TDD Demo
-![video](asset/image/demo.gif)
+![video](asset/image/npm_test.gif)
 
 ##### OOP Demo
-![video](asset/image/demo.gif)
+![video](asset/image/node.gif)
 
 
 
@@ -37,7 +37,7 @@ In the process of building application, I have learned:
 * First time using validate function in inquirer npm to verify the user input
 
 * Utilizing class extends to avoid "DRY" situation in OOP.
-![image](asset/image/demo.gif)
+![image](asset/image/extends_class.png)
 
 
 
