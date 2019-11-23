@@ -1,3 +1,4 @@
+//General Definition//
 const Employee = require("./lib/Employee");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
@@ -15,8 +16,9 @@ let objToHTML = []; //Array to store all the employee object to build html
 let i = 0; //for loop the array above
 let member;
 
-init();
 
+//trigger the building
+init();
 function init() {  //for the question, check the questions.js
     inquirer.prompt(questions.initQuestions).then(function (res) {
         if (res.start) buildTeamLead();
@@ -24,18 +26,20 @@ function init() {  //for the question, check the questions.js
     });
 }
 
+//Manager Question//
 function buildTeamLead() {
     inquirer.prompt(questions.managerQuestions)
         .then(function (data) {
             teamName = data.teamName;
             let tempObj = new Manager(data.manager, data.managerID, data.managerEmail, data.managerOffice);
             objToHTML.push(tempObj);
-            buildStaff();
+            buildStaff(); //back to pick staff catagory
         }, function (error) {
             console.log(error);
         })
 }
 
+//Pick Staff Catagory to build for next
 function buildStaff() {
     inquirer.prompt(questions.pickStaffQuestions)
         .then(function (ans) {
@@ -55,28 +59,33 @@ function buildStaff() {
         })
 }
 
+//build Engineer//
 function buildEngineer() {
     inquirer.prompt(questions.engineerQuestions)
         .then(function (data) {
             let tempObj = new Engineer(data.engineer, data.engineerID, data.engineerEmail, data.engineerGithub);
             objToHTML.push(tempObj);
-            buildStaff();
+            buildStaff();  //back to pick staff catagory
         }, function (error) {
             console.log(error);
         })
 }
 
+//build Intern//
 function buildIntern() {
     inquirer.prompt(questions.internQuestions)
         .then(function (data) {
             let tempObj = new Intern(data.intern, data.internID, data.internEmail, data.internSchool);
             objToHTML.push(tempObj);
-            buildStaff();
+            buildStaff(); //back to pick staff catagory
         }, function (error) {
             console.log(error);
         })
 }
 
+
+//ending questions and build the html//
+//Adding the team name to html//
 function buildHTML() {
     let html = fs.readFileSync("./templates/main.html", "utf8");
     let $main = cheerio.load(html);
@@ -91,16 +100,17 @@ function buildHTML() {
         });
 }
 
+//Add team members to html//
 function addMemberHTML() {
-    if (i < objToHTML.length) {
+    if (i < objToHTML.length) { //loop the array to build team members to html
         member = objToHTML[i++];
         if (member.getRole() === "Manager") addManager(member);
         else if (member.getRole() === "Engineer") addEngineer(member);
         else addIntern(member);
-    } else {
+    } else {   //ending loop above to output team html
         console.log(teamName + " team is built successfully!!!");
         let html = fs.readFileSync("./templates/main.html", "utf8");
-        writefileAsync("./output/index.html", html)
+        writefileAsync(`./output/${teamName}_Team.html`, html)
             .then(function (error) {
                 if (error) throw error;
             });
@@ -108,6 +118,7 @@ function addMemberHTML() {
     }
 }
 
+//add Manager html//
 function addManager(member) {
     let html = fs.readFileSync("./templates/manager.html", "utf8");
     let $manager = cheerio.load(html);
@@ -131,6 +142,7 @@ function addManager(member) {
         });
 }
 
+//add Engineer html//
 function addEngineer(member) {
     let html = fs.readFileSync("./templates/engineer.html", "utf8");
     let $engineer = cheerio.load(html);
@@ -155,7 +167,7 @@ function addEngineer(member) {
         });
 }
 
-
+//add Intern html//
 function addIntern(member) {
     let html = fs.readFileSync("./templates/intern.html", "utf8");
     let $intern = cheerio.load(html);
